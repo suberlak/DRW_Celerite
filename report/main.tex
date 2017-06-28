@@ -259,7 +259,7 @@ Celerite efficiently evaluates the marginalized likelihood of the dataset under 
 
 
 % the simulation setup  : the knobs and whistles 
-
+We simulate  light curves ... 
 
 
 % the original figure  : how we have the same behavior 
@@ -286,6 +286,16 @@ Celerite efficiently evaluates the marginalized likelihood of the dataset under 
 \section{Conclusions}
 % or,  have we answered the questions posed initially ?  
 
+We can confirm results of Kozlowski+2017 regarding an inherent biased introduced in fitting the DRW process. We find that even without any prior (flat prior), the results can be reproduced - the $\rho_{out}$ is biased low for light curves shorter than $\approx 10 \tau$.  However,  the bias is not large for light curves even of length only twice the input characteristic time scale. We argue that it is necessary to quantify the 'bias' and 'goodness' of  theoretically possible performance of  fitting the DRW process with available software. Our choice of software - Celerite - did not introduce any significant bias as compared to the tools used by Kozlowski+2017 (since the internal workings of Celerite are similar to Press-Rybicki-Hewitt method - the reason that Celerite is fast is the same that afforded the PRH method to be so quick). Indeed, the shape of likelihood used with Celerite, that better constrains $\hat{\sigma}$ than $\tau$ or $\sigma$  individually, matches the shape of likelihood in Kozlowski (PRH) method.  We propose the measure of percentage departure from the 'truth' as the measure for the goodness of fit,  and we choose  to consider results within $10 \%$ of the true input value of $\tau$ to be 'good'. 
+
+However,  given that $\hat{\sigma}$ may be better constrained than $\tau$ purely due to the likelihood shape,  we suggest that perhaps even for light curves that are too short to estimate 'well' the input timescale, we are able to estimate the asymptotic structure function value. This helps to select quasars from Stars, since even if the timescale cannot be well estimated,  the amplitude of structure function ( driven by $\sigma$) ,  can help distinguish quasars from background noise, since their amplitude of variation is larger. 
+
+We argue that DRW fitting , and recovering the amplitude of variability within the damped random walk model, can help distinguish  quasar light curves from background noise (or noisy stellar measurements) better than other statistical measures (such as chi2 per degree of freedom, standard deviation,  or rms of the light curve).  
+
+To show that ,  we  simulated  DRW light curves in range of tau, and range of sigma.  With the same sampling, we also simulated white noise, that would be reproducing the  noisy measurements (is there any better model for random noise of measurement  for SDSS  or LSST  ? ). For each light curve, fitted with Celerite with DRW model,  we recover $\tau$ and $\sigma$.  We also calculate $\mathcal{P}$ parameters : $\chi^{2}_{DOF}$, $\chi^{2}_{R}$, standard deviation,  rms.  For each set of input tau, sigma,  we have $N$ realizations, and for each $i-th$ realization there are parameters  $\mathcal{P}_{i}$ . We plot a histogram of $\mathcal{P}$ for each value of input $\tau$, $\sigma$. We record the mean and median averaged over many realizations. We plot that as  a two-dimensional histogram as  $\log{(\rho_{in})}$  vs each parameter $\mathcal{P}$, overplotting the mean and median (along y-axis). 
+
+
+ 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
