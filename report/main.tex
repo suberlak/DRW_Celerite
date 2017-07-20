@@ -302,21 +302,95 @@ We plot an equivalent measure as Fig.\ref{fig:macleod11_15}, detailing the resul
 
 \begin{figure}
 \includegraphics[width=1.05\columnwidth]{figs/MacLeod_2011_Fig_15_N_pts_test_flat_prior.png}
-\caption{Distribution of results of 1000 iterations of DRW light curve simulations. At  each iteration we make a realization of DRW light curve with input $\tau=575$ days, $SF_{\infty}=0.2$ mag, 40 -year baseline, sampled at regular intervals by $f \cdot 1460 $ points,  where $f \in {1,2,4,8}$.  }
+\caption{Distribution of Celerite fit results of 1000 iterations of DRW light curve simulations in controlled number of points experiment. At  each iteration we make a realization of DRW light curve with input $\tau=575$ days, $SF_{\infty}=0.2$ mag, 40 -year baseline, sampled at regular intervals by $f \cdot 1460 $ points,  where $f \in {1,2,4,8}$.}
 \label{fig:macleod11_15_Npts}
 \end{figure}
 
 
 % 2) changing the baseline : exactly as expected 
-We also performed an experiment keeping the number of points per light curve fixed at N = 1460 , but extending the baseline by factor $f \in {1,2,4,8}$. All other parameters are as before ( $\tau = 575$ days, $SF_{\infty} = 0.2$ mag, $err = 0.001$ mag). 
-
+We also performed an experiment keeping the number of points per light curve fixed at N = 1460 , but extending the baseline by factor $f \in {1,2,4,8}$. All other parameters are as before ( $\tau = 575$ days, $SF_{\infty} = 0.2$ mag, $err = 0.001$ mag). We illustrate the light curves used on Fig.~\ref{fig:lc_length}.
 
 % example how light curves change : 
-% DRW_Chelsea_baseline_test_flat_prior.png
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_Chelsea_baseline_test_flat_prior.png}
+\caption{Light curves used in baseline experiment: we freeze parameters   $\tau=575 $ days, $SF_{\infty}=0.2$ mag, $N$ (keep them fixed), and we extend the light curve baseline, starting from 40-years, and increasing it by a factor of $f \in {2,4,8}$, from top to bottom. Note : at each iteration, longer light curves are not a mere shifted copy of the base 40-year length light curve, but new realizations of the DRW process with the same $\tau$, $\sigma$, $N$, and different baseline.}
+\label{fig:lc_length}
+\end{figure}
 
-% Fig 15 with increasing light curve lengh:  
-% results are as we would expect 
-% MacLeod_2011_Fig_15_baseline_test_flat_prior.png
+% 
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/MacLeod_2011_Fig_15_baseline_test_flat_prior.png}
+\caption{Distribution of Celerite fit results for 1000 iterations of DRW light curve simulations in controlled baseline experiment.  We fix input parameters $\tau$, $\sigma$, and $N$ of points,  but at each iteration we simulate four versions of the light curve  : with 40-year baseline, and those longer by a factor $f \in {2,4,8}$. We fit each baseline version with flat prior or Johnson prior. In each panel  on top of histograms of ratios of best-fit results to input value, we display the $rms$, $bias$, and light curve length in years. The histograms are color-coded by light curve baseline : 40 year (black dotted line), 80 year (thick solid blue line), 160 year (dashed magenta line), 320 year (thin solid red line). As we would expect, the longer the baseline, the less is the bias. The rms also decreases with increasing baseline, because results of fit become more centered on a single value.It is worth noting that even for very long baseline (320 years), we do observe nonzero bias.  }
+\label{fig:macleod11_15_baseline}
+\end{figure}
+
+
+\section{Experiments with the structure function shape}
+We simulated 1000 light curves with $\tau=100$ days, $\sigma=0.2$ mag (so that $SF_{\infty}=0.2828$ mag), baseline of $20 \tau$, random sampling from  a uniform distribution with sampling interval of $\Delta t=5$ days,   homoscedastic error $0.001$ mag, $N=400$ points. We fit them with flat or Johnson prior. Fig.~\ref{fig:sim_lc_400}
+
+
+% these two figures use Zeljko's light curves, 
+% but i've established in the notebooks 
+% that my simulation and his are the same ... 
+
+\begin{figure*}
+\includegraphics[width=1.05\textwidth]{figs/DRW_priors_comp1.png}
+%\vskip -0.15in
+\caption{We plot results of fitting the simulated light curves with Celerite Real Term kernel, with flat (left), or Johnson prior (right). The cross shows the location of truth.  Both are offset, and Fig.~\ref{fig:sim_lc_400_marg} shows the marginalized version of that plot. We repeat the same experiment,  increasing the number of points tenfold to show the behavior of the bias. }
+\label{fig:sim_lc_400}
+\end{figure*} 
+
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/sigma_tau_ratios_marginalized.png}
+\caption{The marginalized version of Fig.~\ref{fig:sim_lc_400}. It shows that both with flat prior and Johnson prior,  there is a bias in fitting well-sampled (400 points), long (20 $\tau$), with virtually no error ($\sigma_{phot}=0.001 $ mag). We investigate how this changes with increased number of points on Figs.~\ref{fig:sim_lc_N_pts_flat} and \ref{fig:sim_lc_N_pts_log}}
+\label{fig:sim_lc_400_marg}
+\end{figure}
+
+
+We perform a controlled experiments with this light curve setup: keeping  $\tau$, $\sigma$, baseline, error unchanged, we increase the sampling density $\Delta t$ by a factor $f \in {1,2,4,8}$. Thus $\Delta t$, the sampling interval, is changed as set ${5,2.5, 1.25, 0.625} $ days, and correspondingly the number of points N increases as ${400,800,1600,3200}$.  This experiment shows what effect on the Celerite fits has  increasing the sampling density, with negligible phometric error.
+
+% two figures : for flat and for log (Johnson ) prior . 
+% they show rms and bias,  
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_N_test_flatprior_.png}
+\caption{A controlled experiment to probe how the sampling density affects the fit results with a large number (1000) of light curves, with increasing number of points ($N = f 400$, where $f \in {1,2,4,8}$), and thus increasing sampling density ($\Delta t = 5 /f $, f as before), while keeping  $\tau=100$ days, $\sigma=0.2$ mag  , baseline of $20 \tau$ unchanged. As we expect, both bias and rms decrease as a function of sampling density, although even for very generous sampling of $~12$ hrs we still do not have a distribution that is centered on the true value for this baseline. On this plot we used flat prior. }
+\label{fig:sim_lc_N_pts_flat}
+\end{figure}
+
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_N_test_logprior_.png}
+\caption{Same as Fig.~\ref{fig:sim_lc_N_pts_flat}, but with Johnson prior.}
+\label{fig:sim_lc_N_pts_log}
+\end{figure}
+
+
+To investigate the structure function, we used the base setup of $\tau=100$ days,  $\sigma=0.2$, error = 0.001 mag, length = $20 \tau$, sampling $\Delta t = 5 $ days. For these light curves we considered raw pairs of  $\Delta m_{i,j}, \Delta t_{i,j}$, as well as plotting the robust standard deviation in 200 bins of $\Delta t$. Note that here $\Delta t_{i,j}$ denotes the time difference between $t_{i}$ and $t_{j}$. We find that the stochasticity of light curves prevents from using structure function for a single object, or even an ensemble with less than approximately 10 objects. We illustrate that on a series of Figs.~\ref{fig:sf_1},~\ref{fig:sf_10},~\ref{fig:sf_100} and ~\ref{fig:sf_1000}. 
+
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_SF_1.png}
+\caption{Raw time and magnitude pairwise differences on the top panel, and on the bottom panel with blue dots the robust standard deviation of $\Delta m$ in 200 bins of $\Delta t$, with overplotted in orange dashed line the theoretical structure function (with $SF_{\infty}=0.2 \sqrt{2} $ mag, $\tau=100$ days). Data for only one light curve. }
+\label{fig:sf_1}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_SF_10_LC.png}
+\caption{Same as Fig.~\ref{fig:sf_1}, but combining data for 10 light curves.}
+\label{fig:sf_10}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_SF_100_LC.png}
+\caption{Same as Fig.~\ref{fig:sf_1}, but combining data for 100 light curves.}
+\label{fig:sf_100}
+\end{figure}
+
+
+% add figure with 1000 LC's ... 
 
 \section{Experiments with damping timescale retrieval }
 % or how we reproduce Kozlowski+17 Fig.2 : 
@@ -324,6 +398,10 @@ We also performed an experiment keeping the number of points per light curve fix
 % exactly the same simulation setup  
 
 % results, and how they depend on a combination of noise,  Npts, sampling....
+
+
+
+
 
 
 \section{Conclusions}
