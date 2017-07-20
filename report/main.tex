@@ -101,7 +101,8 @@ $^{1}$Department of Astronomy, University of Washington, Seattle, WA, United Sta
 
 % Abstract of the paper
 \begin{abstract}
-A report to outline validation of C\'el\'erit\'e. We compare the tools used to fitting for $\tau$ and $SF_{\infty}$ to those of \cite{kozlowski2017a}and \cite{macleod2011}. To do so we reproduce some of experiments they conducted, and evaluate whether they can be mutually consistent. 
+A report to outline validation of C\'el\'erit\'e. We compare the tools used to fitting for $\tau$ and $SF_{\infty}$ to those of 
+\cite{kozlowski2017a}and \cite{macleod2011}. To do so we reproduce some of experiments they conducted, and evaluate whether they can be mutually consistent. 
 \end{abstract}
 
 
@@ -114,7 +115,7 @@ A report to outline validation of C\'el\'erit\'e. We compare the tools used to f
 
 Quasars exhibit stochastic variability with characteristic timescales of hundreds of days (Kelly+2009,  Kozlowski+2010,2016, 2017 Macleod+2010,2011,2012, Zu+2011,2013,2016, Kasliwal+2015,2017 ). We employ  C\'el\'erit\'e \citep{foreman2017} , which allows to express any one -dimensional process as a Gaussian Process.  Gaussian Process is defined by covariance and mean. Covariance parameters are often called hyperparameters. To find best-fit hyperparameters we optimize the marginal likelihood  (eq. 5.4, 5.8, Rassmussen\&Williams book). Since the marginal likelihood is the integral of  the product of likelihood and prior,  the logarithm of marginalized likelihood is the sum of the log-likelihood and log-prior (eq.2.28 Rassmussen\&Williams). 
 
-In this report we summarize the tests that have been made to establish great usefulness of  C\'el\'erit\'e in modelling the DRW light curves as Gaussian Processes. We  first compare whether algorithms used to make mock DRW light curves are identical between MacLeod +2011 (which we use), and \cite{kozlowski2017a} (who challenges Macleod+2011 results, and whose results we reproduce). Then we describe how  a choice of boundaries and priors affects the results of best-fit hyperparameters with  C\'el\'erit\'e.  We then compare C\'el\'erit\'e  to another well-tested tool (used by \cite{kozlowski2016a}, \cite{zu2011}, etc.) - JAVELIN.  We then reproduce results of \cite{macleod2011} Fig.15, and \cite{kozlowski2017a} Fig.2 .  	We aim to answer the following questions: 
+In this report we summarize the tests that have been made to establish great usefulness of  C\'el\'erit\'e in modelling the DRW light curves as Gaussian Processes. We  first compare whether algorithms used to make mock DRW light curves are identical between MacLeod +2011 (which we use), and \cite{kozlowski2017a} (who challenges Macleod+2011 results, and whose results we reproduce). Then we describe how  a choice of boundaries and priors affects the results of best-fit hyperparameters with  C\'el\'erit\'e. [[ We then compare C\'el\'erit\'e  to another well-tested tool (used by \cite{kozlowski2016a}, \cite{zu2011}, etc.) - JAVELIN ]].  We then reproduce results of \cite{macleod2011} Fig.15, and \cite{kozlowski2017a} Fig.2 .  	We aim to answer the following questions: 
 \begin{enumerate}
 \item are the tools for fitting tau and SFinf equivalent?
 \item can we reproduce Chelsea`s Fig 15?
@@ -128,6 +129,7 @@ In this report we summarize the tests that have been made to establish great use
 
 
 \section{Simulating DRW}
+\label{sec:simDRW}
 
 We simulate damped random walk light curves by drawing  points from a Gaussian distribution, for which mean and standard deviation are re-calculated at each timestep. Given an input of observation times $t$,   $SF_{\infty}$ - the asymptotic value of the structure function, mean magnitude  $\langle y \rangle$, and the damping timescale $\tau$, we start at time $t_{0}$ and signal at that time is equal to the mean$y_{0} = \langle y \rangle$. The timestep is   
 $\Delta t_{i} = t_{i+1} - t_{i}$.  Given  the signal at time $t_{i}$: $y_{i}$,  and $\Delta t_{i}$,  the signal at next time step $y_{i+1}$ is drawn from  $\mathcal{N}(loc, stdev)$, where : 
@@ -256,24 +258,65 @@ Celerite efficiently evaluates the marginalized likelihood of the dataset under 
 
 \section{Experimenting with number of points and baseline}
 % or how we reproduced Macleod+2011 Fig. 15  : 
-
+% Celerite_fit_simulated_data.ipynb 
 
 % the simulation setup  : the knobs and whistles 
-We simulate  light curves ... 
+We simulate  light curves as described in Sec.~\ref{sec:simDRW}, using the same input parameters as \cite{macleod2011} : $\tau_{in} = 575 $ days, $SF_{\infty}= 0.2 $ mag, regular sampling interval of 10 days ,  $\sigma = SF_{\infty} / \sqrt{2} = 0.1414 $.  We start with 10 000 realizations of a very long (40 years)  and well-sampled  ($\Delta t = 10 days$) light curve.  We fit with Celerite , using bounds on $\sigma$ : [0.1 - 1.0] mag,  and bounds on $\tau$ : [1 - 10000 ] days. At each realization,  we select 1- , 3-, 10- year , full sections of the light curve. We fit at each light curve section length with   with both flat prior or Jeffrey's prior. 
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_Chelsea_multiyears_log_prior.png}
+\caption{Sections of the 40-year light curve, fitted with the Jeffreys (log) prior. These sections are used to reproduce experiment from \citep{macleod2011}.  From top to bottom: 40-year, 10-year, 3-year, 1-year sections. The input is $\tau = 575$ days, $SF_{\infty} = 0.2$, so that $\sigma = 0.14$, homoscedastic error of 0.001 mag.  }
+\label{fig:lc_sections}
+\end{figure}
 
 
 % the original figure  : how we have the same behavior 
 
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/MacLeod_2011_Fig_15_flat.png}
+\caption{Distribution of results of 10000 iterations of DRW light curve , at each iteration fitting the full light curve, or its 1,3, or 10 year sections, shown with dotted, thick solid,  dashed, or thin solid lines, respectively. From top left panel, going clockwise, we display the ratio of each quantity derived from fitted $\tau$, $\sigma$ to the input values:  $\hat{\sigma}  = SF_{\infty}  / \sqrt{\tau}$,  $K = \tau \sqrt{SF_{\infty}}$, $SF_{\infty} = \sqrt{2} \sigma$, and $\tau$. We display the rms and bias calculated for each distribution ($rms \equiv  \sqrt{\langle x^{2}\rangle}$, $bias \equiv \langle x \rangle $, with the latter being the distribution mean). Note that, especially as seen on upper right and bottom panels, the longer the section of the light curve that we use, the smaller the bias. It is surprising that even for a well-sampled 40-year light curve the bias in all four quantities is nonzero, but the overall conclusions : that the result of DRW fit asymptotically converge to true values only for light curves much longer than $10 \tau$,  are similar to those of \citep{macleod2011}. }
+\label{fig:macleod11_15}
+\end{figure}
+
 
 % two additional experiments : 
 
+We also performed two controlled experiments : how changing the number of points, or changing the baseline, affects the results.  
 
 % 1)  changing the number of points  : weird stuff happens  : 
      % inspecting the Structure Function .... 
+With the former, we keep the light curve  baseline fixed at 40 years,  initially sampled by 1460 points ( that corresponds to the regular interval of 10 days : $40 * 365 / 10  = 1460$) - this is the same starting light curve as in the top panel of Fig.~\ref{fig:lc_sections}. 
+We then increase the number of points by a factor $f \in {1,2,4,8}$. We illustrate that for flat prior on Fig.~\ref{fig:Npts_experiment}
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_Chelsea_Npts_test_flat_prior.png}
+\caption{Experiment increasing the sampling density of the fixed baseline light curve. From top to bottom, we increase the initial number of points sampling the underlying process from 1460 to twice, four, and eight times more : second, third and fourth panels, respectively. }
+\label{fig:Npts_experiment}
+\end{figure}
+
+
+We plot an equivalent measure as Fig.\ref{fig:macleod11_15}, detailing the results of this experiment - see Fig.~\ref{fig:macleod11_15_Npts}
+
+
+
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/MacLeod_2011_Fig_15_N_pts_test_flat_prior.png}
+\caption{Distribution of results of 1000 iterations of DRW light curve simulations. At  each iteration we make a realization of DRW light curve with input $\tau=575$ days, $SF_{\infty}=0.2$ mag, 40 -year baseline, sampled at regular intervals by $f \cdot 1460 $ points,  where $f \in {1,2,4,8}$.  }
+\label{fig:macleod11_15_Npts}
+\end{figure}
 
 
 % 2) changing the baseline : exactly as expected 
+We also performed an experiment keeping the number of points per light curve fixed at N = 1460 , but extending the baseline by factor $f \in {1,2,4,8}$. All other parameters are as before ( $\tau = 575$ days, $SF_{\infty} = 0.2$ mag, $err = 0.001$ mag). 
 
+
+% example how light curves change : 
+% DRW_Chelsea_baseline_test_flat_prior.png
+
+% Fig 15 with increasing light curve lengh:  
+% results are as we would expect 
+% MacLeod_2011_Fig_15_baseline_test_flat_prior.png
 
 \section{Experiments with damping timescale retrieval }
 % or how we reproduce Kozlowski+17 Fig.2 : 
