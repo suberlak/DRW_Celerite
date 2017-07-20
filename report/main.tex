@@ -391,9 +391,36 @@ To investigate the structure function, we used the base setup of $\tau=100$ days
 
 
 % add figure with 1000 LC's ... 
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRW_SF_1000_LC.png}
+\caption{Same as Fig.~\ref{fig:sf_1}, but combining data for 1000 light curves.}
+\label{fig:sf_1000}
+\end{figure}
+
 
 \section{Experiments with damping timescale retrieval }
 % or how we reproduce Kozlowski+17 Fig.2 : 
+% Celerite_Kozlowski_2017_plot.ipynb
+% Celerite_Kozlowski_2017_simulate.ipynb 
+
+Here we repeat the basic tenets of the experiment performed by Kozłowski+2017. He simulated 100-year long light curves, with cadence $\Delta t= 2 $ days, $\tau = 200 $days, $SF_{\infty} = 0.2$ mag, that were later degraded to the cadences of SDSS S82 or OGLE-III. Various sections of these light curves were used to test the bias caused by length of time series (baseline). 
+
+We simulated as the 'truth'  10 000 light curves with $\tau=575 $ days, $SF_{\infty}=0.2$ mag, baseline of $100 \tau = 57500$ days (157 years, but expressing the light curve length in terms of multiples of the underlying decorrelation timescale is most informative). We chose the cadence of $\Delta t=1$ day, at regular intervals.
+
+% https://cartesianproduct.wordpress.com/tag/kronecker-product/
+
+
+We illustrate the sampling procedure (in other words, the grid of $\rho$), on Fig.~\ref{fig:sampling}
+
+
+
+\begin{figure*}
+\includegraphics[width=1.05\textwidth]{figs/Sampling_illustrate_regular_0-001_noise.png}
+%\vskip -0.15in
+\caption{We illustrate the process of selecting different sections of a light curve, depending on the desired number of points N, and length of section : $\rho$.  From left to right, we sample $N \in {1000,200,60}$ points. Focusing on a single column, from top to bottom we sample on a logarithmic grid of $\rho$. The smallest $\rho$ is set by the maximum attainable light curve section, which corresponds to the full length $l = 100 \tau$, and since $\rho = 1 / l$, $\rho_{min} = 0.01$. The largest $\rho$ is related to the shortest possible light curve section conditional on the number of points chosen. Thus choosing $N \in {1000,200,60}$ days, the shortest possible sections are $l \in {1000,200,60}$ days given that we have adopted the $\Delta t = 1 $ day in 'true' light curve.}
+\label{fig:sampling}
+\end{figure*} 
+
 
 % exactly the same simulation setup  
 
