@@ -405,29 +405,41 @@ To investigate the structure function, we used the base setup of $\tau=100$ days
 
 Here we repeat the basic tenets of the experiment performed by Kozłowski+2017. He simulated 100-year long light curves, with cadence $\Delta t= 2 $ days, $\tau = 200 $days, $SF_{\infty} = 0.2$ mag, that were later degraded to the cadences of SDSS S82 or OGLE-III. Various sections of these light curves were used to test the bias caused by length of time series (baseline). 
 
+
+% exactly the same simulation setup 
 We simulated as the 'truth'  10 000 light curves with $\tau=575 $ days, $SF_{\infty}=0.2$ mag, baseline of $100 \tau = 57500$ days (157 years, but expressing the light curve length in terms of multiples of the underlying decorrelation timescale is most informative). We chose the cadence of $\Delta t=1$ day, at regular intervals.
 
 % https://cartesianproduct.wordpress.com/tag/kronecker-product/
 
+Now we want to downsample the 'truth'. Kozlowski chose either N=60 points (SDSS-S82-like) or N=445 (OGLE-III-like). We choose a grid of N $\in$ {60,200,1000} points. Given that, we then choose the baseline.  Because of minimum cadence of $\Delta t = 1$ day, there is a minimum light curve length we can obtain with a given  choice of number of points.   $T_{min}= N * \Delta t$, so that $T_{min} \in {60,200,1000} days$. Following Kozlowski, we define the ratio of input time scale to  experiment length (baseline) as $\rho \equiv \tau / T$. Light curve length  $l = 1 / \rho$ corresponds to the baseline expressed in units of $\tau$. Given  $T_{min}$ , set by the number of points, the minimum length we can choose is  $l_{min} = T_{min} / \tau$, all the way to to $  l_{max} = T_{max} / \tau = (100 * \tau )/ \tau = 100$.  This means that, depending on the number of points $N$, we can sample $\rho$ space from $\rho_{min} = 1 / 100 $ , corresponding to the full baseline,  to  $\rho_{max} = \tau / N = 575 / N$. For  $N \in {60,200,1000}$, the maximum values of $\rho$ are $\rho_{max} \in {10,2,0.5}$. $\rho_{min}$ and $\rho_{max}$ set up a logarithmic grid of $\rho$ , which we sample at 100 points.  Each $\rho$ defines the light curve length, but we still need to choose how to sample the light curve with given $N$ points : at regular intervals, or random intervals. Like Kozłowski, we introduce random Gaussian noise, at one of three possible levels :  {0.001, 0.01, 0.1 } mag.  Thus, in essence,  we sample the grid of 18 combinations : { Regular / Random sampling  } $\times$   { 60, 200, 1000 points} $\times$ {0.001, 0.01, 0.1 mag noise} where $\times$   indicates the Cartesian product. For each combination of tuple (number of points, sampling type, noise level ) we span the grid of $\rho$, so that for each of the 10 000 light curves we select 100  sections varying in length. We illustrate the sampling procedure (in other words, the grid of $\rho$), on Fig.~\ref{fig:sampling}. Thus we performed 18 * 10 000 * 100  = 18 million  light curve fits with Celerite, and thanks to its optimized performance, it only took 6 hours on a Macbook laptop  (< 1 milisecond per lightcurve, which is great considering the overhead of file input / output to store the results and read light curves from independent text files).  
+    
 
-We illustrate the sampling procedure (in other words, the grid of $\rho$), on Fig.~\ref{fig:sampling}
-
-
-
+% illustrate sampling a lightcurve 
 \begin{figure*}
 \includegraphics[width=1.05\textwidth]{figs/Sampling_illustrate_regular_0-001_noise.png}
 %\vskip -0.15in
-\caption{We illustrate the process of selecting different sections of a light curve, depending on the desired number of points N, and length of section : $\rho$.  From left to right, we sample $N \in {1000,200,60}$ points. Focusing on a single column, from top to bottom we sample on a logarithmic grid of $\rho$. The smallest $\rho$ is set by the maximum attainable light curve section, which corresponds to the full length $l = 100 \tau$, and since $\rho = 1 / l$, $\rho_{min} = 0.01$. The largest $\rho$ is related to the shortest possible light curve section conditional on the number of points chosen. Thus choosing $N \in {1000,200,60}$ days, the shortest possible sections are $l \in {1000,200,60}$ days given that we have adopted the $\Delta t = 1 $ day in 'true' light curve.}
+\caption{We illustrate the process of selecting different sections of a light curve, depending on the desired number of points N, and length of section : $\rho$. Here we chose regular sampling, and negligible 0.001 mag noise, but the principle is exactly the same regardless of noise level or sampling procedure. From left to right, we sample $N \in {1000,200,60}$ points. Focusing on a single column, from top to bottom we sample on a logarithmic grid of $\rho$. The smallest $\rho$ is set by the maximum attainable light curve section, which corresponds to the full length $l = 100 \tau$, and since $\rho = 1 / l$, $\rho_{min} = 0.01$. The largest $\rho$ is related to the shortest possible light curve section conditional on the number of points chosen. Thus choosing $N \in {1000,200,60}$ days, the shortest possible sections are $l \in {1000,200,60}$ days given that we have adopted the $\Delta t = 1 $ day in 'true' light curve.}
 \label{fig:sampling}
 \end{figure*} 
 
+ 
+% results, i.e. Fig2 , and how they depend on a combination 
+% of noise,  Npts, sampling....
 
-% exactly the same simulation setup  
+We compare the retrieved timescale to the input timescale, parametrized as a fraction of light curve (section) length. As the noise level increases, so does the spread in retrieved values of characteristic timescale, as seen on Fig.~\ref{fig:}.  Fig.~\ref{fig:change_N} illustrates  that the number of points does not appreciably affect the bias level.
 
-% results, and how they depend on a combination of noise,  Npts, sampling....
+\begin{figure*}
+\includegraphics[width=1.05\textwidth]{figs/Fig_2_change_noise.png}
+\caption{We plot the histogram of input to output $\rho$, and overplot the median of counts in bins of $\log_{10}{(\rho_{in})}$. The red dashed line marks the expected output in case of perfect fit.  We see  that indeed for light curves less than ~10 times the length of characteristic timescale the retrieved timescale is biased low. Increasing the number of points per lightcurve decreases the vertical scatter, i.e. decreases the rms of $\rho_{out}$ in bins of $\rho_{in}$.  We find that random vs regular sampling does not affect the plot morphology, thus we only show the random sampling.  On this plot, from left to right, we increase the photometric error from 0.001 to 0.1, keeping the number of points fixed at 1000. }
+\label{fig:change_noise}
+\end{figure*} 
 
 
-
+\begin{figure*}
+\includegraphics[width=1.05\textwidth]{figs/Fig_2_change_N.png}
+\caption{Similarly to Fig.~\ref{fig:change_noise}, but keeping noise fixed at 0.001 mag level , random sampling , and decreasing from left to right the number of points from 1000 to 60. }
+\label{fig:change_N}
+\end{figure*} 
 
 
 
