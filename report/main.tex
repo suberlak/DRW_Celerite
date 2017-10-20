@@ -326,8 +326,8 @@ We also performed an experiment keeping the number of points per light curve fix
 \end{figure}
 
 
-\section{Experiments with the structure function shape}
-We simulated 1000 light curves with $\tau=100$ days, $\sigma=0.2$ mag (so that $SF_{\infty}=0.2828$ mag), baseline of $20 \tau$, random sampling from  a uniform distribution with sampling interval of $\Delta t=5$ days,   homoscedastic error $0.001$ mag, $N=400$ points. We fit them with flat or Johnson prior. Fig.~\ref{fig:sim_lc_400}
+\section{Investigating the fitting bias as a function of prior, and sampling density}
+We simulated 1000 light curves with $\tau=100$ days, $\sigma=0.2$ mag (so that $SF_{\infty}=0.2828$ mag), baseline of $20 \tau$, random sampling from  a uniform distribution with sampling interval of $\Delta t=5$ days,   homoscedastic error $0.001$ mag, $N=400$ points. To check the influence of choosing different priors, we fit these light curves  using flat or Johnson prior - see Fig.~\ref{fig:sim_lc_400}. See the same plot marginalized over the y-axis $\tau_{fit} / \tau_{input}$, or x-axis : $\sigma_{fit} / \sigma_{input}$. These show that there is a persistent bias even in well-sampled (400 points), long light curves with negligible photometric error. We explore on Fig.~\ref{fig:sim_lc_N_pts_flat} how this changes with increased sampling density (from 400 points to 3200 points) over the same baseline ($20 \tau$, with $\tau=100$ days) . This is achieved by an increase in sampling density $\Delta t$ by a factor $f \in {1,2,4,8}$. Thus $\Delta t$, the sampling interval, is changed as set ${5,2.5, 1.25, 0.625} $ days, and correspondingly the number of points N increases as ${400,800,1600,3200}$.
 
 
 % these two figures use Zeljko's light curves, 
@@ -348,9 +348,6 @@ We simulated 1000 light curves with $\tau=100$ days, $\sigma=0.2$ mag (so that $
 \label{fig:sim_lc_400_marg}
 \end{figure}
 
-
-We perform a controlled experiments with this light curve setup: keeping  $\tau$, $\sigma$, baseline, error unchanged, we increase the sampling density $\Delta t$ by a factor $f \in {1,2,4,8}$. Thus $\Delta t$, the sampling interval, is changed as set ${5,2.5, 1.25, 0.625} $ days, and correspondingly the number of points N increases as ${400,800,1600,3200}$.  This experiment shows what effect on the Celerite fits has  increasing the sampling density, with negligible phometric error.
-
 % two figures : for flat and for log (Johnson ) prior . 
 % they show rms and bias,  
 
@@ -367,9 +364,8 @@ We perform a controlled experiments with this light curve setup: keeping  $\tau$
 \label{fig:sim_lc_N_pts_log}
 \end{figure}
 
-
-To investigate the structure function, we used the base setup of $\tau=100$ days,  $\sigma=0.2$, error = 0.001 mag, length = $20 \tau$, sampling $\Delta t = 5 $ days. For these light curves we considered raw pairs of  $\Delta m_{i,j}, \Delta t_{i,j}$, as well as plotting the robust standard deviation in 200 bins of $\Delta t$. Note that here $\Delta t_{i,j}$ denotes the time difference between $t_{i}$ and $t_{j}$. We find that the stochasticity of light curves prevents from using structure function for a single object, or even an ensemble with less than approximately 10 objects. We illustrate that on a series of Figs.~\ref{fig:sf_1},~\ref{fig:sf_10},~\ref{fig:sf_100} and ~\ref{fig:sf_1000}. 
-
+\section{Statistical wiggles:  exploring the shape of structure function}
+To investigate the shape of structure function, we used the basic DRW light curve setup of $\tau=100$ days,  $\sigma=0.2$ mag, error = 0.001 mag, length = $20 \tau$, sampling $\Delta t = 5 $ days. We simulated 1000 light curves with identical parameters, and collecting points from  one (Fig.~\ref{fig:sf_1}), or an ensemble of  ten (Fig.~\ref{fig:sf_10}), hundred (Fig.~\ref{fig:sf_100}), and all thousand  (Fig. ~\ref{fig:sf_1000}) light curves, we plotted raw pairs of  $\Delta m_{i,j}, \Delta t_{i,j}$, as well as robust standard deviation in 200 bins of $\Delta t$.  Note that here $\Delta t_{i,j}$ denotes the time difference between $t_{i}$ and $t_{j}$. We find that the stochasticity of light curves prevents from using structure function for a single object, or even an ensemble with less than approximately 10 objects. 
 
 \begin{figure}
 \includegraphics[width=1.05\columnwidth]{figs/DRW_SF_1.png}
@@ -403,15 +399,29 @@ To investigate the structure function, we used the base setup of $\tau=100$ days
 % Celerite_Kozlowski_2017_plot.ipynb
 % Celerite_Kozlowski_2017_simulate.ipynb 
 
-Here we repeat the basic tenets of the experiment performed by Kozłowski+2017. He simulated 100-year long light curves, with cadence $\Delta t= 2 $ days, $\tau = 200 $days, $SF_{\infty} = 0.2$ mag, that were later degraded to the cadences of SDSS S82 or OGLE-III. Various sections of these light curves were used to test the bias caused by length of time series (baseline). 
+Here we repeat the basic tenets of the experiment performed by \citep{kozlowski2017a}. He simulated 100-year long light curves, with cadence $\Delta t= 2 $ days, $\tau = 200 $days, $SF_{\infty} = 0.2$ mag , that were later degraded to the cadences of SDSS S82 or OGLE-III. Various sections of these light curves were used to test the bias caused by length of time series (baseline). 
 
 
 % exactly the same simulation setup 
-We simulated as the 'truth'  10 000 light curves with $\tau=575 $ days, $SF_{\infty}=0.2$ mag, baseline of $100 \tau = 57500$ days (157 years, but expressing the light curve length in terms of multiples of the underlying decorrelation timescale is most informative). We chose the cadence of $\Delta t=1$ day, at regular intervals.
+We simulated as the 'truth'  10 000 light curves with $\tau=575 $ days, $SF_{\infty}=0.2$ mag  (i.e.  $\sigma_{input} =SF_{\infty} /\sqrt{2} = 0.1414  $), baseline of $100 \tau = 57500$ days (157 years, but expressing the light curve length in terms of multiples of the underlying decorrelation timescale seems more informative). We chose the cadence of $\Delta t=1$ day, at regular intervals.
 
 % https://cartesianproduct.wordpress.com/tag/kronecker-product/
 
-Now we want to downsample the 'truth'. Kozlowski chose either N=60 points (SDSS-S82-like) or N=445 (OGLE-III-like). We choose a grid of N $\in$ {60,200,1000} points. Given that, we then choose the baseline.  Because of minimum cadence of $\Delta t = 1$ day, there is a minimum light curve length we can obtain with a given  choice of number of points.   $T_{min}= N * \Delta t$, so that $T_{min} \in {60,200,1000} days$. Following Kozlowski, we define the ratio of input time scale to  experiment length (baseline) as $\rho \equiv \tau / T$. Light curve length  $l = 1 / \rho$ corresponds to the baseline expressed in units of $\tau$. Given  $T_{min}$ , set by the number of points, the minimum length we can choose is  $l_{min} = T_{min} / \tau$, all the way to to $  l_{max} = T_{max} / \tau = (100 * \tau )/ \tau = 100$.  This means that, depending on the number of points $N$, we can sample $\rho$ space from $\rho_{min} = 1 / 100 $ , corresponding to the full baseline,  to  $\rho_{max} = \tau / N = 575 / N$. For  $N \in {60,200,1000}$, the maximum values of $\rho$ are $\rho_{max} \in {10,2,0.5}$. $\rho_{min}$ and $\rho_{max}$ set up a logarithmic grid of $\rho$ , which we sample at 100 points.  Each $\rho$ defines the light curve length, but we still need to choose how to sample the light curve with given $N$ points : at regular intervals, or random intervals. Like Kozłowski, we introduce random Gaussian noise, at one of three possible levels :  {0.001, 0.01, 0.1 } mag.  Thus, in essence,  we sample the grid of 18 combinations : { Regular / Random sampling  } $\times$   { 60, 200, 1000 points} $\times$ {0.001, 0.01, 0.1 mag noise} where $\times$   indicates the Cartesian product. For each combination of tuple (number of points, sampling type, noise level ) we span the grid of $\rho$, so that for each of the 10 000 light curves we select 100  sections varying in length. We illustrate the sampling procedure (in other words, the grid of $\rho$), on Fig.~\ref{fig:sampling}. Thus we performed 18 * 10 000 * 100  = 18 million  light curve fits with Celerite, and thanks to its optimized performance, it only took 6 hours on a Macbook laptop  (< 1 milisecond per lightcurve, which is great considering the overhead of file input / output to store the results and read light curves from independent text files).  
+Now we want to downsample the 'truth'. Kozlowski chose either N=60 points (SDSS-S82-like) or N=445 (OGLE-III-like). To explore a similar parameter space, we choose a grid of N $\in$ \{60,200,1000\} points. Given that, we then choose the baseline.  Because of minimum cadence of $\Delta t = 1$ day, there is a minimum light curve length we can obtain with a given  choice of number of points.   $T_{min}= N * \Delta t$, so that $T_{min} \in \{60,200,1000\} $ days. Following Kozlowski, we define the ratio of input time scale to  experiment length (baseline) as $\rho \equiv \tau / T$. Light curve length  $l = 1 / \rho = T / \tau$ corresponds to the baseline expressed in units of $\tau$. 
+
+Given  $T_{min}$ , set by the number of points, the minimum light curve length we can choose is  $l_{min} = T_{min} / \tau$, all the way to to $  l_{max} = T_{max} / \tau = (100 * \tau )/ \tau = 100$.  
+
+This means that, depending on the number of points $N$, we sample the  $\rho$ space from $\rho_{min} = 1 / l_{max} = \tau / T_{max} = \tau / 100 \tau = 1 / 100 $ , corresponding to the full baseline,  to  $\rho_{max} = 1 / l_{min} = \tau / T_{min} = \tau / N = 575 / N $. Thus, for  $N \in \{60,200,1000\}$,  the minimum value of $\rho$ is always $\rho_{min} = 0.001$, and the maximum values of $\rho$ are $\rho_{max} \in \{10,2,0.5\}$. 
+
+With set to  $\tau_{in} = 575 days$, $\sigma_{in} = 0.2 / \sqrt(2)$  for all light curves,  the number of points per light curve defines $\rho_{min}$ and $\rho_{max}$. Using these as boundary values, we set up a logarithmic grid of $\rho$ , sampled at 100 values of $\rho$.  
+
+Given the light curve length in terms of $\rho$ and number of points $N$ we explore the effect of  regular and  random sampling. Finally, following Koz{\l}owski, we introduce a random Gaussian noise, at one of three possible levels :  \{0.001, 0.01, 0.1 \} mag.  
+
+Thus, given the 10 000 'true' light curves, we sample the 18-element phase space  : { Regular / Random sampling  } $\times$   \{ 60, 200, 1000 points\} $\times$ \{0.001, 0.01, 0.1 mag noise\} where $\times$   indicates the Cartesian product. 
+
+For each combination of tuple (number of points, sampling type, noise level ) we span the grid of $\rho$, so that for each of the 10 000 light curves we select 100  sections varying in length. We illustrate the sampling procedure (in other words, the grid of $\rho$), on Fig.~\ref{fig:sampling}. 
+
+It is worth mentioning that in total we performed 18 * 10 000 * 100  = 18 million  light curve fits with Celerite, and thanks to its optimized performance, it only took 6 hours on a Macbook laptop  (< 1 milisecond per lightcurve, which is great considering the overhead of file input / output to store the results and read light curves from independent text files).  
     
 
 % illustrate sampling a lightcurve 
@@ -426,7 +436,7 @@ Now we want to downsample the 'truth'. Kozlowski chose either N=60 points (SDSS-
 % results, i.e. Fig2 , and how they depend on a combination 
 % of noise,  Npts, sampling....
 
-We compare the retrieved timescale to the input timescale, parametrized as a fraction of light curve (section) length. As the noise level increases, so does the spread in retrieved values of characteristic timescale, as seen on Fig.~\ref{fig:}.  Fig.~\ref{fig:change_N} illustrates  that the number of points does not appreciably affect the bias level.
+We compare the retrieved timescale to the input timescale, parametrized as a fraction of light curve (section) length. As the noise level increases, so does the spread in retrieved values of characteristic timescale, as seen on Fig.~\ref{fig:change_noise}.  Fig.~\ref{fig:change_N} illustrates  that the number of points does not appreciably affect the bias level.
 
 \begin{figure*}
 \includegraphics[width=1.05\textwidth]{figs/Fig_2_change_noise.png}
@@ -441,6 +451,30 @@ We compare the retrieved timescale to the input timescale, parametrized as a fra
 \label{fig:change_N}
 \end{figure*} 
 
+We also evaluate how the fractional "bias", i.e ratio 
+
+\begin{equation}
+\frac{\rho_{out}-\rho_{in}}{\rho_{in}}
+\end{equation}
+
+depends on $\rho_{in}$ -  the ratio of input timescale ($\tau=575 days$) to baseline ($T$, depends on the number of points).
+Fig.~\ref{fig:fracbias_changeN} shows that the measured decorrelation timescales are biased low by 25 \%  as long as the light curve is at least 10 times longer than the true decorrelation timescale ($\rho_{in} < 0.1 $, or $\log_{10}(\rho_{in}) < -1.0$). 
+
+
+\begin{figure*}
+\includegraphics[width=1.05\textwidth]{figs/Fig_3_changeN_keepNoise-0001_sampling-random.png}
+\caption{Histogram of the fractional bias of $\rho_{out}-\rho_{in} / \rho_{in}$, as a function of the input $\rho$ (=575 / N). From left to right we change N from 1000 to 60 which sets the maximum value of $\rho_{in}$. We fix photometric noise at 0.001 mag level and select random sampling. Overplotted is the median fractional bias (orange dots), the unbiased level (horizontal dotted line), and the value of $\rho_{in} = 0.1$ (vertical solid line). Note that regardless of the number of points sampling the lightcurve, the bias is less than 25\%  as long as  the length of light curve is at least ten times longer than the true decorrelation timescale ($\tau = 575 $days ).}
+\label{fig:fracbias_changeN}
+\end{figure*} 
+
+Finally , on Fig.~\ref{fig:symmetry_changeN} we check the symmetry of $\sigma_{out} / \sigma_{in}$, to verify that the spread is symmetric , and not biased either way for shorter light curves. 
+
+
+\begin{figure*}
+\includegraphics[width=1.05\textwidth]{figs/Fig_4_changeN_keepNoise-0001_sampling-random.png}
+\caption{Histogram of the 'measured' $\sigma_{out}$ to 'true' $\sigma_{in}$. As in Fig.~\ref{fig:fracbias_changeN}, we change the N points from left to right, keeping the sampling type (random) and photometric error (0.001 mag) unchanged. The orange circles mark the median y. We also overplot the horizontal dotted line at y=0, and vertical solid line at x=-1.0.}
+\label{fig:symmetry_changeN}
+\end{figure*} 
 
 
 \section{Conclusions}
