@@ -258,6 +258,30 @@ and the Hessian matrix is  the matrix of second derivatives of the likelihood wi
 H(\theta) = \frac{\partial^{2}\log{L}}{\partial \theta \partial \theta }
 \end{equation}
 
+
+The parameters estimated in case of DRW fitting with Celerite were $\log{a}$ and $\log{c}$, so that the standard deviations describe the standard deviation in $\log{a}$ or $\log{c}$ :  $s_{\log{a}}$, $s_{\log{c}}$.  Since these are related to $\sigma$, $\tau$ via : $a \equiv \sigma^{2}$ and $c \equiv \tau^{1}$ (by definition), we translate the error on logarithms of $\sigma^{2}$ or $\tau^{1}$ to error  on $\sigma$, $\tau$ . To do that we use standard error propagation formulae : 
+
+\begin{equation}
+x = \log{p} , \\ 
+s_{x} = \frac{s_{p}}{p} \\
+\therefore s_{p}  = p \,s_{x}
+\end{equation}
+
+so that   $s_{a} = a\, s_{\log{a}} $ , $s_{c} = c\, s_{\log{c}}$, and 
+
+
+\begin{equation}
+x = p^{y} , \\ 
+s_{x} = xy \frac{s_{p}}{p} \\
+\therefore s_{p} = \frac{s_{x}p}{xy }
+\end{equation}
+
+so that $s_{\sigma} = s_{a} / 2 \sigma$, and $s_{\tau} = s_{c} \tau^{2}$
+
+
+
+
+
 \section{Likelihood for GP}
 Celerite efficiently evaluates the marginalized likelihood of the dataset under a Gaussian Process model with given kernel and hyperparameters. We optimize the  log-likelihood  for the best-fit hyperparameters with the stable   L-BFGS-B  \citep{lu1995}, \citep{zhu1997}  algorithm   using  \verb|scipy.optimize.minimize| \citep{jones2001} implementation.  We illustrate the shape of log-likelihood for a simulated light curve with parametes  {$\tau_{in}=100$ days, $\sigma_{in} = 0.2^{\mathrm{mag}}$, Gaussian noise of $0.001^{\mathrm{mag}}$, with length $20 \tau$, and regular sampling of $\Delta t = 1 $ day  }, and flat prior . See   Fig. ~\ref{fig:lc_logL_fit}  for the light curve and GP prediction, and Fig.~\ref{fig:lc_logL} for the the shape of log-likelihood evaluated for this data on the grid of hyperparameters $\sigma$, $\tau$. 
 
