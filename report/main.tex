@@ -206,19 +206,57 @@ Covariance matrix, or kernel, is a function that defines similarity between two 
 S_{ij} = a_{j} e^ {-c_{j} | t_{j} - t_{i}|}
 \end{equation}
 
-with parameters  \verb|log_a| and \verb|log_c|.    It is clear that this is a DRW kernel if we substitute  $a_{j} \equiv \sigma^{2}$, and  $c_{j} \equiv \tau^{-1}$, so that $\verb|log_a| = 2 \log \sigma$, and $\verb|log_c| = - \log \tau$.  By default there are no boundaries on parameter values, and there is no prior.  We find that imposing very liberal boundaries does not affect the result of fit but helps ensure computational stability. Thus we choose to limit $\sigma$ to between 0.01 and 1.0 mag, and $\tau$ to between 1 and 10000 days . 
-Both \cite{macleod2011}  and \cite{kozlowski2017a} use Jeffreys prior \citep{jeffreys46} on $\tau$ and $\hat{\sigma}$ : $prior(\tau) = 1 / \tau$ ,  and $prior(\hat{\sigma}) = 1 / \hat{\sigma}$.  Jeffreys prior  can be effectively expressed in terms of  \verb|a| and \verb|c| parameters :  
+with parameters  $\log{(a)}$ and $\log{(c)}$.    It is clear that this is a DRW kernel if we substitute  $a_{j} \equiv \sigma^{2}$, and  $c_{j} \equiv \tau^{-1}$, so that $\log{(a)} = 2 \log ( \sigma)$, and $\log{(c)} = - \log (\tau)$.  By default there are no boundaries on parameter values, and there is no prior.  We find that imposing very liberal boundaries does not affect the result of fit but helps ensure computational stability. Thus we choose to limit $\sigma$ to between 0.01 and 1.0 mag, and $\tau$ to between 1 and 10000 days . 
+Both \cite{macleod2011}  and \cite{kozlowski2017a} use Jeffreys prior \citep{jeffreys46} on $\tau$ and $\hat{\sigma}$ : $prior(\tau) = 1 / \tau$ ,  and $prior(\hat{\sigma}) = 1 / \hat{\sigma}$. 
+
+
+In the Bayesian framework, we have in general : 
 
 \begin{equation}
-prior(\verb|a|,\verb|c|) = c + \frac{1}{\sqrt{2 ac}} 
+\mathrm{posterior} = \mathrm{likelihood} \cdot \mathrm{prior}
 \end{equation}
 
-so that in logarithmic space : 
+so that :
 
 \begin{equation}
-\log{(prior)} = \frac{1}{2} \left( \verb|log_c| - \verb|log_a|- \log{2} \right)
+-\log{(\mathrm{posterior})} = -\log{(\mathrm{likelihood})} - \log{(\mathrm{prior})}
 \end{equation}
 
+With  Jeffreys prior
+
+\begin{equation}
+\mathrm{prior} = \frac{1}{\hat{\sigma}}\frac{1}{\tau} = \frac{1}{\tau}\frac{1}{\sigma\sqrt{2/\tau}}=2^{-1/2}\tau^{-1/2}\sigma^{-1}
+\end{equation}
+i.e. 
+
+\begin{equation}
+\log{(\mathrm{prior})} = -\frac{1}{2}\log{(2)} + \frac{1}{2}\log{(c)}-\frac{\log{(a)}}{2}
+\end{equation}
+
+so that :
+
+\begin{equation}
+-\log{(\mathrm{posterior})} = -\log{(\mathrm{likelihood})} + \frac{1}{2}\left( \log{(2)} - \log{(c)} + \log{(a)} \right) 
+\end{equation}
+
+
+We estimate the error on the maximum likelihood estimate (MLE) in  the following way : if the MLE, based on the global maximum of the log-likelihood of the posterior distribition $\log{L}$, is $\hat{\theta}$, the standard deviation of $\hat{\theta}$ is the square root of variance $var(\theta)$. But the variance is the inverse of the Information  matrix :
+
+\begin{equation}
+var(\theta) = [I(\theta)]^{-1}
+\end{equation}
+
+which in turn is equal to the negative of the expected value of the Hessian matrix : 
+
+\begin{equation}
+[I(\theta)] = -E[H(\theta)]
+\end{equation}
+
+and the Hessian matrix is  the matrix of second derivatives of the likelihood with respect to the parameters : 
+
+\begin{equation}
+H(\theta) = \frac{\partial^{2}\log{L}}{\partial \theta \partial \theta }
+\end{equation}
 
 \section{Likelihood for GP}
 Celerite efficiently evaluates the marginalized likelihood of the dataset under a Gaussian Process model with given kernel and hyperparameters. We optimize the  log-likelihood  for the best-fit hyperparameters with the stable   L-BFGS-B  \citep{lu1995}, \citep{zhu1997}  algorithm   using  \verb|scipy.optimize.minimize| \citep{jones2001} implementation.  We illustrate the shape of log-likelihood for a simulated light curve with parametes  {$\tau_{in}=100$ days, $\sigma_{in} = 0.2^{\mathrm{mag}}$, Gaussian noise of $0.001^{\mathrm{mag}}$, with length $20 \tau$, and regular sampling of $\Delta t = 1 $ day  }, and flat prior . See   Fig. ~\ref{fig:lc_logL_fit}  for the light curve and GP prediction, and Fig.~\ref{fig:lc_logL} for the the shape of log-likelihood evaluated for this data on the grid of hyperparameters $\sigma$, $\tau$. 
