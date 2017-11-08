@@ -150,7 +150,9 @@ with  $r = \Delta t_{i} / \tau$.   Here we followed eq. A4 and A5 in \cite{kelly
 Apart from $\tau$ and $SF_{\infty}$, we choose $N_{pts}$ - at how many points to sample the simulated DRW process, and the length of baseline $T = l \cdot \tau$.  In this formalism the baseline multiplicity $l$  is equivalent to $1 / \rho$ where  $\rho = \tau / T $  (Kozlowski+2017). We can sample the baseline either at regular intervals of $\Delta t$, or at random $N_{pts}$. One sets the other - given  $\Delta t$,  we find $N_{pts}$ as the nearest integer to $t_{max} - t_{min} / \Delta t $. 
 
 
-\section{DRW as Gaussian Process}
+\section{Theoretical description of DRW}
+
+\subsection{DRW as a stochastic process}
 DRW is a stochastic process defined by the covariance matrix  
 
 \begin{equation}
@@ -200,13 +202,17 @@ and from  $\log{K}$ :
 
 These equations denote lines $y = ax + b$,  and the slope of one is the  inverse reciprocal of another, which proves that they are orthogonal in that space (see Fig.~\ref{fig:lc_logL_arrows})
 
+\subsection{DRW as a Gaussian process in Celerite}
 Covariance matrix, or kernel, is a function that defines similarity between two points. In general, a kernel is any function that maps $x$, $x'$ onto $\mathbb{R}$. Thus a covariance function is a specific type of a kernel.   A Gaussian process is defined by its covariance function and mean. To model light curves as DRW using Gaussian Process approach we use the Real Term kernel in Celerite : 
 
 \begin{equation}
 S_{ij} = a_{j} e^ {-c_{j} | t_{j} - t_{i}|}
 \end{equation}
 
-with parameters  $\log{(a)}$ and $\log{(c)}$.    It is clear that this is a DRW kernel if we substitute  $a_{j} \equiv \sigma^{2}$, and  $c_{j} \equiv \tau^{-1}$, so that $\log{(a)} = 2 \log ( \sigma)$, and $\log{(c)} = - \log (\tau)$.  By default there are no boundaries on parameter values, and there is no prior.  We find that imposing very liberal boundaries does not affect the result of fit but helps ensure computational stability. Thus we choose to limit $\sigma$ to between 0.01 and 1.0 mag, and $\tau$ to between 1 and 10000 days . 
+with parameters  $\log{(a)}$ and $\log{(c)}$.    It is clear that this is a DRW kernel if we substitute  $a_{j} \equiv \sigma^{2}$, and  $c_{j} \equiv \tau^{-1}$, so that $\log{(a)} = 2 \log ( \sigma)$, and $\log{(c)} = - \log (\tau)$.  
+
+\subsubsection{Priors in fitting DRW}
+By default there are no boundaries on parameter values, and there is no prior.  We find that imposing very liberal boundaries does not affect the result of fit but helps ensure computational stability. Thus we choose to limit $\sigma$ to between 0.01 and 1.0 mag, and $\tau$ to between 1 and 10000 days . 
 Both \cite{macleod2011}  and \cite{kozlowski2017a} use Jeffreys prior \citep{jeffreys46} on $\tau$ and $\hat{\sigma}$ : $prior(\tau) = 1 / \tau$ ,  and $prior(\hat{\sigma}) = 1 / \hat{\sigma}$. 
 
 
@@ -239,6 +245,7 @@ so that :
 -\log{(\mathrm{posterior})} = -\log{(\mathrm{likelihood})} + \frac{1}{2}\left( \log{(2)} - \log{(c)} + \log{(a)} \right) 
 \end{equation}
 
+\subsubsection{Error on the MLE}
 
 We estimate the error on the maximum likelihood estimate (MLE) in  the following way : if the MLE, based on the global maximum of the log-likelihood of the posterior distribition $\log{L}$, is $\hat{\theta}$, the standard deviation of $\hat{\theta}$ is the square root of variance $var(\theta)$. But the variance is the inverse of the Information  matrix :
 
