@@ -290,7 +290,20 @@ so that $s_{\sigma} = s_{a} / 2 \sigma$, and $s_{\tau} = s_{c} \tau^{2}$
 
 
 \section{Likelihood for GP}
-Celerite efficiently evaluates the marginalized likelihood of the dataset under a Gaussian Process model with given kernel and hyperparameters. We optimize the  log-likelihood  for the best-fit hyperparameters with the stable   L-BFGS-B  \citep{lu1995}, \citep{zhu1997}  algorithm   using  \verb|scipy.optimize.minimize| \citep{jones2001} implementation.  We illustrate the shape of log-likelihood for a simulated light curve with parametes  {$\tau_{in}=100$ days, $\sigma_{in} = 0.2^{\mathrm{mag}}$, Gaussian noise of $0.001^{\mathrm{mag}}$, with length $20 \tau$, and regular sampling of $\Delta t = 1 $ day  }, and flat prior . See   Fig. ~\ref{fig:lc_logL_fit}  for the light curve and GP prediction, and Fig.~\ref{fig:lc_logL} for the the shape of log-likelihood evaluated for this data on the grid of hyperparameters $\sigma$, $\tau$. 
+Celerite efficiently evaluates the log-likelihood in the parameter space of the DRW model given the data. 
+In the Bayesian framework,   we infer the best-fit  values of parameters  by analyzing the log(posterior) function. If the log(posterior) has a normal (Gaussian) shape, we can understand the probability of a given parameter by marginalizing the log(posterior) along all the other dimensions. For example, for a log(posterior) of form L(a,b), that is, dependent on two parameters: a and b,  we have $p(a)= \int{L(a,b) db}$, and $p(b) = \int{L(a,b)da}$. p(a) and p(b) are then marginalized distributions of parameters a and b . When properly normalized, so that $\int{p(a)da} = 1 $ they can be treated as probability distributions. Then the best-fit value of a parameter can be the expectation value : $\int{a p(a)da}$, the median of p(a), or the value at the maximum of p(a).  If the log(posterior) is a 2D smooth function with only one maximum, then this 2D maximum corresponds to a maximum of p(a) as well as p(b).  If we were using no prior, then it would be the maximum value of log(likelihood), and the parameter set at the maximum of lod(likelihood) would be the Maximum Likelihood Estimates.  Since we are using prior information,  and log(posterior) = log(likelihood) + log(prior), the parameter set at the maximum of log(posterior) are Maximum A Posteriori estimates (MAP). 
+If p(a) and p(b) are normal distributions, then MAP would be the same as the expectation value. However, for other shapes, they would be not, as we show below.  
+
+To use MAP estimates, one does not necessarily need to explore the full log(posterior) space. There are several approaches : 
+
+\begin{itemize}
+	\item  use an optimization algorithm that quickly finds the location of maximum (eg. L-BFGS-B, as implemented in scipy.optimize.minimize)
+	\item  sample the log(posterior) space using Monte-Carlo Markov Chains.  This allows to sample the log(posterior) and arrive at the location of maximum.
+	\item  sample the log(posterior) space on a regular grid. This may be computationally expensive, depending on the size of the grid. 
+
+\end{itemize}
+
+The easiest  use case of Celerite is to use the optimization algorithm to find the maximum of the log(posterior) , and find the MAP estimates for sought parameters. We can then optimize the  log-likelihood  for the best-fit hyperparameters with the stable   L-BFGS-B  \citep{lu1995}, \citep{zhu1997}  algorithm .  We illustrate the shape of log-likelihood for a simulated light curve with parametes  {$\tau_{in}=100$ days, $\sigma_{in} = 0.2^{\mathrm{mag}}$, Gaussian noise of $0.001^{\mathrm{mag}}$, with length $20 \tau$, and regular sampling of $\Delta t = 1 $ day  }, and flat prior . See   Fig. ~\ref{fig:lc_logL_fit}  for the light curve and GP prediction, and Fig.~\ref{fig:lc_logL} for the the shape of log-likelihood evaluated for this data on the grid of hyperparameters $\sigma$, $\tau$. 
 
 \begin{figure}
 \includegraphics[width=1.05\columnwidth]{figs/sim_lc_flat_prior_fit.png}
@@ -307,7 +320,7 @@ Celerite efficiently evaluates the marginalized likelihood of the dataset under 
 \end{figure} 
 
 
-
+An important point is that for the  Celerite RealTerm kernel that is used to model the DRW,  the shape of log(posterior) in the $\tau-\sigma$ space is non-Gaussian , so that the MAP estimates are not the same as expectation values.  This is illustrated on  Fig.~\ref{fig:lc_logL_exp_MAP}
 
 
 \begin{figure*}
@@ -324,6 +337,40 @@ Celerite efficiently evaluates the marginalized likelihood of the dataset under 
 \label{fig:lc_logL_arrows}
 \end{figure} 
 
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRWtestCeleriteZI_LC737_Jeff1_upd.png}
+%\vskip -0.15in
+\caption{This figure illustrates the evaluation of log(posterior) = log(likelihood) + log(prior), where prior = (1/$\sigma$) * (1/$\tau$) on a grid of $\sigma-\tau$. The input light curve is one of the 1000 simulated DRW light curves, with input parameters $\sigma_{in}=0.2$, $\tau_{in}=100$ d, light curve length 20$\tau$, regular sampling interval of 5d, negligible error yerr=0.001  mag, N=400  points. Using Celerite RealTerm kernel, we evaluate the loglikelihood for the Gaussian Process model given the data for each element of the grid. The grid is defined in terms of $\sigma/\sigma_{in}$ and $\tau/ \tau_{in}$, from $10E-8$ to 2.5, resulting in 249x249 grid elements. This computation takes 25 seconds on a laptop ( 16 GB RAM, 2.5 GHz Intel Core i7). The blue solid lines show the marginalized distributions $p(\sigma)$, $p(\tau)$. The dashed magenta line is the location of the MAP estimate of best-fit parameters, and the dot-dashed line is the expectation value. }
+\label{fig:lc_logL_exp_MAF}
+\end{figure} 
+
+
+
+\section{MAP or expectation value ? }
+
+We test the following priors : 
+
+
+\begin{itemize}
+	\item `Jeff1' = $(1/\sigma)(1\tau)$
+	\item `Jeff2' = $(1/\hat{\sigma})(1\tau)$
+	\item `p1' = $\sigma$  $\tau$
+	\item `p2' =  $\hat{\sigma}$  $\tau$
+\end{itemize}
+
+They are combined with the log(likelihood) to form log(posterior). We find that although `Jeff1' is   the prior used by MacLeod+2011, Kozlowski+2016,  in our case `Jeff1' is less biased.  Now, between the expectation value best-fit parameter  $\langle \sigma\rangle$ and the MAP estimate $MAP(\sigma)$, we find that $\langle \sigma \rangle$ is less biased - see Fig. 
+
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/sigma_tau_ratios_MPE_expectation.png}
+%\vskip -0.15in
+\caption{Using the same setup as for Fig.~\ref{fig:lc_logL_exp_MAF} for each of the 1000 light curves we find the MAP estimate using scipy.optimize.minimize, and the expectation value estimate using   log(posterior) evaluated on a grid of  210x210 values, with $\sigma/\sigma_{in}$ and $\tau/\tau_{in}$ ranging from 0.4 to 2.5, with step of 0.01. We show results only for the `Jeff1' prior, which is the least biased (on the <1\% level).  The solid line shows the histogram of the expectation values, and the dotted line shows the distribution of the MAP-estimates. }
+\label{fig:exp_vs_MAP}
+\end{figure} 
+
+
+	
+
+ 
 
 \section{Experimenting with number of points and baseline}
 % or how we reproduced Macleod+2011 Fig. 15  : 
@@ -413,7 +460,7 @@ We simulated 1000 light curves with $\tau=100$ days, $\sigma=0.2$ mag (so that $
 
 \begin{figure}
 \includegraphics[width=1.05\columnwidth]{figs/sigma_tau_ratios_marginalized.png}
-\caption{The marginalized version of Fig.~\ref{fig:sim_lc_400}. It shows that both with flat prior and Johnson prior,  there is a bias in fitting well-sampled (400 points), long (20 $\tau$), with virtually no error ($\sigma_{phot}=0.001 $ mag). We investigate how this changes with increased number of points on Figs.~\ref{fig:sim_lc_N_pts_flat} and \ref{fig:sim_lc_N_pts_log}}
+\caption{The marginalized version of Fig.~\ref{fig:sim_lc_400}. It shows that both with flat prior and Jeffreys prior,  there is a bias in fitting well-sampled (400 points), long (20 $\tau$), with virtually no error ($\sigma_{phot}=0.001 $ mag). We investigate how this changes with increased number of points on Figs.~\ref{fig:sim_lc_N_pts_flat} and \ref{fig:sim_lc_N_pts_log}}
 \label{fig:sim_lc_400_marg}
 \end{figure}
 
