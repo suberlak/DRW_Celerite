@@ -345,8 +345,14 @@ An important point is that for the  Celerite RealTerm kernel that is used to mod
 \end{figure} 
 
 
+\begin{figure}
+\includegraphics[width=1.05\columnwidth]{figs/DRWtestCeleriteZI_LC737_sigma-hat_K_1.png}
+\caption{The log(posterior) for the same light curve as on Fig.~\ref{fig:lc_logL_exp_MAF} for the DRW model, evaluated on the grid of  $\hat{\sigma}$-$K$.  Note that in that projection there is no covariance between the two parameters (the main axes of the log(posterior) ellipsoid are aligned with the coordinate axes), unlike in Fig.~\ref{fig:lc_logL_exp_MAF}.}
+\label{fig:lc_logL_K-sigmahat}
+\end{figure} 
 
-\section{MAP or expectation value ? }
+
+\section{Maximum A-Posteriori estimate or expectation value ? }
 
 We test the following priors : 
 
@@ -358,7 +364,7 @@ We test the following priors :
 	\item `p2' =  $\hat{\sigma}$  $\tau$
 \end{itemize}
 
-They are combined with the log(likelihood) to form log(posterior). We find that although `Jeff1' is   the prior used by MacLeod+2011, Kozlowski+2016,  in our case `Jeff1' is less biased.  Now, between the expectation value best-fit parameter  $\langle \sigma\rangle$ and the MAP estimate $MAP(\sigma)$, we find that $\langle \sigma \rangle$ is less biased - see Fig. 
+They are combined with the log(likelihood) to form log(posterior). We find that although `Jeff1' is   the prior used by MacLeod+2011, Kozlowski+2016,  in our case `Jeff1' is less biased.  Now, between the expectation value best-fit parameter  $\langle \sigma\rangle$ and the MAP estimate $MAP(\sigma)$, we find that $\langle \sigma \rangle$ is less biased - see Fig.~\ref{fig:exp_vs_MAP}.
 
 \begin{figure}
 \includegraphics[width=1.05\columnwidth]{figs/sigma_tau_ratios_MPE_expectation.png}
